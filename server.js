@@ -1,17 +1,11 @@
-const express = require('express');
+const app = require('./app');
+const { mongoConn } = require('./database/configuration');
 
-const app = express();
+const port = process.env.PORT || 5000;
+app.set('port', port)
 
-const tiposEquipo = [{
-    nombre:'juan',
-    estado: true,
-    fechaCreacion: new Date(),
-    fechaActualizacion: new Date()
-}]
-app.get('/tiposEquipo',(req, res)=>{
-    return res.json(tiposEquipo)
-})
+const conn = mongoConn()
 
-app.listen(3000, ()=>{
-    console.log("servidor arrancó por puerto 3000")
-})
+app.listen(app.get('port'), () => {
+    console.log(`Servidor arrancó por puerto ${app.get('port')}`);
+});

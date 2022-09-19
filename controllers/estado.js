@@ -5,7 +5,7 @@ const { request, response } = require("express");
  * Crea un tipo de Equipo
  */
  const createEstado = async (req = request, res = response) => {
-    const nombre = req.body.nombre;
+    const nombre = req.body.nombre.toLowerCase();
     const estadoRes = req.body.estado;
     const datos = {
       nombre,

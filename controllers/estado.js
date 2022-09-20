@@ -2,7 +2,7 @@ const Estado = require("../models/estado");
 const { request, response } = require("express");
 
 /**
- * Crea un tipo de Equipo
+ * Crea un estado
  */
  const createEstado = async (req = request, res = response) => {
     const nombre = req.body.nombre.toLowerCase();

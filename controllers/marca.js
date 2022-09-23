@@ -22,25 +22,77 @@ const { request, response } = require("express");
  /**
  * Obtener todas las marcas
  */
-const getMarcas = () => {};
+const getMarcas = async (req = request, res = response) => {
+  try {
+    console.log(req.query);
+    const estado = req.query.estado;
+    let marcasBD;
+    if(estado){
+      const query = { estado: estado };
+      marcasBD = await Marca.find(query)
+    }else{
+      marcasBD = await Marca.find()
+    }
+
+    return res.json(marcasBD)
+  } catch (e) {
+    return res.status(500).json({msj: e})
+  }
+};
 
 /**
  * Obtener una marca por Id
  */
 
-const getMarcaById = () => {};
+const getMarcaById = async(req = request, res = response) => {
+  try {
+    const id = req.params.id;
+    const filter = { _id: id };
+    const marcaBD = await Marca.findOne(filter);
+    return res.json(marcaBD);
+  } catch (e) {
+    return res.status(500).json({ msj: e });
+  }
+};
 
 /**
  *  Editar una marca por id
  */
 
-const updateMarcaById = () => {};
+const updateMarcaById = async (req = request, res = response) => {
+  try {
+    const id = req.params.id;
+    const data = req.body;
+    console.log(data);
+    console.log(id);
+    data.fechaActualizacion = new Date();
+    console.log(data);
+    const marcaDB = await Marca.findByIdAndUpdate(id, data, {
+      new: true,
+    });
+    return res.json(marcaDB);
+  } catch (e) {
+    return res.status(500).json({ msj: e });
+  }
+};
 
 /**
  * Eliminar una marca por id
  */
 
-const deleteMarcaById = () => {};
+const deleteMarcaById = async (req = request, res = response) => {
+  try {
+    const id = req.params.id;
+    const marcaBD = await Marca.findById(id);
+    if (!marcaBD) {
+      return res.status(404).json({ msj: "No existe la marca" });
+    }
+    await Marca.findByIdAndDelete(id);
+    return res.status(204).json({ msj: "Borrado" });
+  } catch (e) {
+    return res.status(500).json({ msj: e });
+  }
+};
 
 module.exports = {
   createMarca,

@@ -1,5 +1,6 @@
 const Usuario = require("../models/usuario");
 const { request, response } = require("express");
+const {validationResult} = require('express-validator')
 
 /**
  * Crear un usuario
@@ -7,6 +8,10 @@ const { request, response } = require("express");
 
 const createUser = async (req = request, res = response) => {
   try {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({ err: errors.array()})
+    }
     const nombre = req.body.nombre.toLowerCase();
     const email = req.body.email;
     const datos = {

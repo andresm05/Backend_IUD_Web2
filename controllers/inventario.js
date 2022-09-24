@@ -4,7 +4,6 @@ const Usuario = require("../models/usuario");
 const Marca = require("../models/marca");
 const TipoEquipo = require("../models/tipoEquipo");
 const Estado = require("../models/estado");
-
 /**
  * Obtener todos los inventarios
  */
@@ -48,6 +47,10 @@ const createInventario = async (req = request, res = response) => {
       serial = req.body.serial;
       const { usuario, marca, estado, tipoEquipo } = data;
       //Validaciones
+      const inventarioBD = await Inventario.findOne({ serial });
+      if (inventarioBD) {
+        return res.status(400).json({ msg: "Ya existe el inventario" });
+      }
       const usuarioBD = await Usuario.findOne({
         _id: usuario._id,
         estado: true,
@@ -79,15 +82,11 @@ const createInventario = async (req = request, res = response) => {
           .status(400)
           .json({ msj: "no existe el usuario o está inactivo" });
       }
-      const inventarioBD = await Inventario.findOne({ serial });
-      if (inventarioBD) {
-        return res.status(400).json({ msg: "Ya existe el inventario" });
-      }
       const inventario = new Inventario(data);
       await inventario.save();
       res.status(201).json(inventario);
-    }else{
-      return res.status(500).json({ msg:'Faltan parámetros'})
+    } else {
+      return res.status(400).json({ msg: "Faltan parámetros" });
     }
   } catch (e) {
     res.status(500).json({ msg: e });

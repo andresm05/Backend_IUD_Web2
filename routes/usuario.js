@@ -1,12 +1,13 @@
 const {Router} = require('express')
 const { createUser, getUsers, getUserById, updateUserById, deleteUserById } = require('../controllers/usuario')
+const {body} = require('express-validator')
 
 const router = Router()
 
 /**
  * Crear un tipo de Equipo
  */
-router.post('/',createUser)
+router.post('/',body('email').isEmail(), createUser)
 
 /**
  * Obtener todos los tipos de Equipo

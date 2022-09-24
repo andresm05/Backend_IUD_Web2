@@ -2,21 +2,25 @@ const TipoEquipo = require("../models/tipoEquipo");
 const { request, response } = require("express");
 
 /**
- * Crea un tipo de Equipo
+ * Crear un tipo de Equipo
  */
 const createEquipo = async (req = request, res = response) => {
-  const nombre = req.body.nombre.toUpperCase();
-  const datos = {
-    nombre,
-  };
-  const tipoEquipoBD = await TipoEquipo.findOne({ nombre });
-  if (tipoEquipoBD) {
-    return res.status(400).json({ msg: "Ya existe nombre" });
+  try {
+    const nombre = req.body.nombre.toUpperCase();
+    const datos = {
+      nombre,
+    };
+    const tipoEquipoBD = await TipoEquipo.findOne({ nombre });
+    if (tipoEquipoBD) {
+      return res.status(400).json({ msg: "Ya existe nombre" });
+    }
+    const tipoEquipo = new TipoEquipo(datos);
+    console.log(tipoEquipo);
+    await tipoEquipo.save();
+    res.status(201).json(req.body);
+  } catch (e) {
+    res.status(500).json({ msg: e });
   }
-  const tipoEquipo = new TipoEquipo(datos);
-  console.log(tipoEquipo);
-  await tipoEquipo.save();
-  res.status(201).json(req.body);
 };
 
 /**
@@ -26,11 +30,16 @@ const getEquipos = async (req = request, res = response) => {
   try {
     console.log(req.query);
     const estado = req.query.estado;
-    const query = { estado: estado };
-    const tipoEquiposBD = await TipoEquipo.find(query)
-    return res.json(tipoEquiposBD)
+    let tipoEquiposBD;
+    if (estado) {
+      const query = { estado: estado };
+      tipoEquiposBD = await TipoEquipo.find(query);
+    } else {
+      tipoEquiposBD = await TipoEquipo.find();
+    }
+    return res.json(tipoEquiposBD);
   } catch (e) {
-    return res.status(500).json({msj: e})
+    return res.status(500).json({ msj: e });
   }
 };
 /**
@@ -55,6 +64,10 @@ const getEquipoById = async (req = request, res = response) => {
 const updateEquipoById = async (req = request, res = response) => {
   try {
     const id = req.params.id;
+    const buscarTipoEquipo = await TipoEquipo.findById(id);
+    if (!buscarTipoEquipo) {
+      return res.status(404).json({ msj: "No existe el tipo de equipo" });
+    }
     const data = req.body;
     console.log(data);
     console.log(id);
@@ -81,7 +94,7 @@ const deleteEquipoById = async (req = request, res = response) => {
       return res.status(404).json({ msj: "No existe el tipo de equipo" });
     }
     await TipoEquipo.findByIdAndDelete(id);
-    return res.status(204).json({ msj: "Borrado" });
+    return res.status(204).json({});
   } catch (e) {
     return res.status(500).json({ msj: e });
   }

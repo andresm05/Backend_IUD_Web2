@@ -1,7 +1,7 @@
 const app = require('./app');
 const { mongoConn } = require('./database/configuration');
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 app.set('port', port)
 
 const conn = mongoConn()

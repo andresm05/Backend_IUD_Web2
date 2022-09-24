@@ -2,15 +2,16 @@ const Usuario = require("../models/usuario");
 const { request, response } = require("express");
 
 /**
- * Crea un usuario
+ * Crear un usuario
  */
 
 const createUser = async (req = request, res = response) => {
+  try {
     const nombre = req.body.nombre.toLowerCase();
     const email = req.body.email;
     const datos = {
       nombre,
-      email
+      email,
     };
     const emailBd = await Usuario.findOne({ email });
     if (emailBd) {
@@ -20,10 +21,12 @@ const createUser = async (req = request, res = response) => {
     console.log(usuario);
     await usuario.save();
     res.status(201).json(req.body);
-  };
+  } catch (e) {
+    res.status(500).json({ msg: e });
+  }
+};
 
-  
-  /**
+/**
  * Obtener todos los usuarios
  */
 const getUsers = async (req = request, res = response) => {
@@ -31,16 +34,16 @@ const getUsers = async (req = request, res = response) => {
     console.log(req.query);
     const estado = req.query.estado;
     let usuariosBD;
-    if(estado){
+    if (estado) {
       const query = { estado: estado };
-      usuariosBD = await Usuario.find(query)
-    }else{
-      usuariosBD = await Usuario.find()
+      usuariosBD = await Usuario.find(query);
+    } else {
+      usuariosBD = await Usuario.find();
     }
 
-    return res.json(usuariosBD)
+    return res.json(usuariosBD);
   } catch (e) {
-    return res.status(500).json({msj: e})
+    return res.status(500).json({ msj: e });
   }
 };
 
@@ -66,15 +69,16 @@ const getUserById = async (req = request, res = response) => {
 const updateUserById = async (req = request, res = response) => {
   try {
     const id = req.params.id;
+    const buscarUser = await Usuario.findById(id);
+    if (!buscarUser) {
+      return res.status(404).json({ msj: "No existe el usuario" });
+    }
     const data = req.body;
     console.log(data);
     console.log(id);
     data.fechaActualizacion = new Date();
     console.log(data);
-    const buscarUser = await Usuario.findById(id)
-    if(!buscarUser){
-      return res.status(404).json({ msj: "No existe el usuario" });
-    }
+
     const usuarioBD = await Usuario.findByIdAndUpdate(id, data, {
       new: true,
     });
@@ -96,7 +100,7 @@ const deleteUserById = async (req = request, res = response) => {
       return res.status(404).json({ msj: "No existe el usuario" });
     }
     await Usuario.findByIdAndDelete(id);
-    return res.status(204).json({ msj: "Borrado" });
+    return res.status(204).json({});
   } catch (e) {
     return res.status(500).json({ msj: e });
   }

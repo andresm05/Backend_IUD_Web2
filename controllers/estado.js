@@ -2,14 +2,15 @@ const Estado = require("../models/estado");
 const { request, response } = require("express");
 
 /**
- * Crea un estado
+ * Crear un estado
  */
- const createEstado = async (req = request, res = response) => {
+const createEstado = async (req = request, res = response) => {
+  try {
     const nombre = req.body.nombre.toLowerCase();
     const estadoRes = req.body.estado;
     const datos = {
       nombre,
-      estado: estadoRes
+      estado: estadoRes,
     };
     const estadoBd = await Estado.findOne({ nombre });
     if (estadoBd) {
@@ -19,9 +20,12 @@ const { request, response } = require("express");
     console.log(estado);
     await estado.save();
     res.status(201).json(req.body);
-  };
+  } catch (e) {
+    res.status(500).json({ msg: e });
+  }
+};
 
-  /**
+/**
  * Obtener todos los tipos de Equipo
  */
 const getEstados = async (req = request, res = response) => {
@@ -29,16 +33,16 @@ const getEstados = async (req = request, res = response) => {
     console.log(req.query);
     const estado = req.query.estado;
     let estadoBD;
-    if(estado){
+    if (estado) {
       const query = { estado: estado };
-      estadoBD = await Estado.find(query)
-    }else{
-      estadoBD = await Estado.find()
+      estadoBD = await Estado.find(query);
+    } else {
+      estadoBD = await Estado.find();
     }
 
-    return res.json(estadoBD)
+    return res.json(estadoBD);
   } catch (e) {
-    return res.status(500).json({msj: e})
+    return res.status(500).json({ msj: e });
   }
 };
 
@@ -64,6 +68,10 @@ const getEstadoById = async (req = request, res = response) => {
 const updateEstadoById = async (req = request, res = response) => {
   try {
     const id = req.params.id;
+    const buscarEstado = await Estado.findById(id);
+    if (!buscarEstado) {
+      return res.status(404).json({ msj: "No existe el usuario" });
+    }
     const data = req.body;
     console.log(data);
     console.log(id);
@@ -90,7 +98,7 @@ const deleteEstadoById = async (req = request, res = response) => {
       return res.status(404).json({ msj: "No existe el estado" });
     }
     await Estado.findByIdAndDelete(id);
-    return res.status(204).json({ msj: "Borrado" });
+    return res.status(204).json({});
   } catch (e) {
     return res.status(500).json({ msj: e });
   }

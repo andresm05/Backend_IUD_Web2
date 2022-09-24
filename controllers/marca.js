@@ -2,21 +2,26 @@ const Marca = require('../models/marca')
 const { request, response } = require("express");
 
 /**
- * Crea una marca
+ * Crear una marca
  */
  const createMarca = async (req = request, res = response) => {
-    const nombre = req.body.nombre.toUpperCase();
-    const datos = {
-      nombre
-    };
-    const marcaBd = await Marca.findOne({ nombre });
-    if (marcaBd) {
-      return res.status(400).json({ msg: "Ya existe la marca" });
+    try{
+      const nombre = req.body.nombre.toUpperCase();
+      const datos = {
+        nombre
+      };
+      const marcaBd = await Marca.findOne({ nombre });
+      if (marcaBd) {
+        return res.status(400).json({ msg: "Ya existe la marca" });
+      }
+      const marca = new Marca(datos);
+      console.log(marca);
+      await marca.save();
+      res.status(201).json(req.body);
+    }catch(e){
+      res.status(500).json({msg: e})
     }
-    const marca = new Marca(datos);
-    console.log(marca);
-    await marca.save();
-    res.status(201).json(req.body);
+
   };
 
  /**
@@ -62,6 +67,10 @@ const getMarcaById = async(req = request, res = response) => {
 const updateMarcaById = async (req = request, res = response) => {
   try {
     const id = req.params.id;
+    const buscarMarca = await Marca.findById(id)
+    if(!buscarMarca){
+      return res.status(404).json({ msj: "No existe el usuario" });
+    }
     const data = req.body;
     console.log(data);
     console.log(id);
@@ -88,7 +97,7 @@ const deleteMarcaById = async (req = request, res = response) => {
       return res.status(404).json({ msj: "No existe la marca" });
     }
     await Marca.findByIdAndDelete(id);
-    return res.status(204).json({ msj: "Borrado" });
+    return res.status(204).json({});
   } catch (e) {
     return res.status(500).json({ msj: e });
   }

@@ -1,6 +1,5 @@
 const {Router} = require('express')
 const {getInventarios, createInventario, updateInventarioById, deleteInventarioById, getInventarioById} = require('../controllers/inventario')
-const {body} = require('express-validator')
 
 const router = Router()
 

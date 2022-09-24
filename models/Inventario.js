@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const estado = require("./estado");
 
 const InventarioSchema= new Schema({
     serial:{

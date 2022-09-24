@@ -6,27 +6,34 @@ const { request, response } = require("express");
  */
 const createEstado = async (req = request, res = response) => {
   try {
-    const nombre = req.body.nombre.toLowerCase();
-    const estadoRes = req.body.estado;
-    const datos = {
-      nombre,
-      estado: estadoRes,
-    };
-    const estadoBd = await Estado.findOne({ nombre });
-    if (estadoBd) {
-      return res.status(400).json({ msg: "Ya existe nombre" });
+    if (
+      Object.keys(req.body).includes("nombre") &&
+      Object.keys(req.body).includes("estado")
+    ) {
+      const nombre = req.body.nombre.toUpperCase();
+      const estadoRes = req.body.estado;
+      const datos = {
+        nombre,
+        estado: estadoRes,
+      };
+      const estadoBd = await Estado.findOne({ nombre });
+      if (estadoBd) {
+        return res.status(400).json({ msg: "Ya existe el estado" });
+      }
+      const estado = new Estado(datos);
+      console.log(estado);
+      await estado.save();
+      res.status(201).json(req.body);
+    } else {
+      return res.status(400).json({ msg: "Faltan parámetros" });
     }
-    const estado = new Estado(datos);
-    console.log(estado);
-    await estado.save();
-    res.status(201).json(req.body);
   } catch (e) {
     res.status(500).json({ msg: e });
   }
 };
 
 /**
- * Obtener todos los tipos de Equipo
+ * Obtener todos los estados
  */
 const getEstados = async (req = request, res = response) => {
   try {
@@ -40,14 +47,14 @@ const getEstados = async (req = request, res = response) => {
       estadoBD = await Estado.find();
     }
 
-    return res.json(estadoBD);
+    return res.status(200).json(estadoBD);
   } catch (e) {
     return res.status(500).json({ msj: e });
   }
 };
 
 /**
- * Obtener un equipo por Id
+ * Obtener un estado por Id
  */
 
 const getEstadoById = async (req = request, res = response) => {
@@ -55,14 +62,14 @@ const getEstadoById = async (req = request, res = response) => {
     const id = req.params.id;
     const filter = { _id: id };
     const estadoBD = await Estado.findOne(filter);
-    return res.json(estadoBD);
+    return res.status(200).json(estadoBD);
   } catch (e) {
     return res.status(500).json({ msj: e });
   }
 };
 
 /**
- *  Editar un tipo de equipo
+ *  Editar un estado
  */
 
 const updateEstadoById = async (req = request, res = response) => {
@@ -70,7 +77,7 @@ const updateEstadoById = async (req = request, res = response) => {
     const id = req.params.id;
     const buscarEstado = await Estado.findById(id);
     if (!buscarEstado) {
-      return res.status(404).json({ msj: "No existe el usuario" });
+      return res.status(404).json({ msj: "No existe el estado" });
     }
     const data = req.body;
     console.log(data);

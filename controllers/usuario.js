@@ -1,6 +1,6 @@
 const Usuario = require("../models/usuario");
 const { request, response } = require("express");
-const {validationResult} = require('express-validator')
+const { validationResult } = require("express-validator");
 
 /**
  * Crear un usuario
@@ -8,24 +8,29 @@ const {validationResult} = require('express-validator')
 
 const createUser = async (req = request, res = response) => {
   try {
-    const errors = validationResult(req)
-    if(!errors.isEmpty()){
-      return res.status(400).json({ err: errors.array()})
+    if (
+      Object.keys(req.body).includes("nombre") &&
+      Object.keys(req.body).includes("email")
+    ) {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ err: errors.array() });
+      }
+      const nombre = req.body.nombre.toLowerCase();
+      const email = req.body.email;
+      const datos = {
+        nombre,
+        email,
+      };
+      const emailBd = await Usuario.findOne({ email });
+      if (emailBd) {
+        return res.status(400).json({ msg: "Ya existe el usuario" });
+      }
+      const usuario = new Usuario(datos);
+      console.log(usuario);
+      await usuario.save();
+      res.status(201).json(req.body);
     }
-    const nombre = req.body.nombre.toLowerCase();
-    const email = req.body.email;
-    const datos = {
-      nombre,
-      email,
-    };
-    const emailBd = await Usuario.findOne({ email });
-    if (emailBd) {
-      return res.status(400).json({ msg: "Ya existe el usuario" });
-    }
-    const usuario = new Usuario(datos);
-    console.log(usuario);
-    await usuario.save();
-    res.status(201).json(req.body);
   } catch (e) {
     res.status(500).json({ msg: e });
   }

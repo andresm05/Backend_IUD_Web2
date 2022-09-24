@@ -6,18 +6,22 @@ const { request, response } = require("express");
  */
 const createEquipo = async (req = request, res = response) => {
   try {
-    const nombre = req.body.nombre.toUpperCase();
-    const datos = {
-      nombre,
-    };
-    const tipoEquipoBD = await TipoEquipo.findOne({ nombre });
-    if (tipoEquipoBD) {
-      return res.status(400).json({ msg: "Ya existe nombre" });
+    if (Object.keys(req.data).includes("nombre")) {
+      const nombre = req.body.nombre.toUpperCase();
+      const datos = {
+        nombre,
+      };
+      const tipoEquipoBD = await TipoEquipo.findOne({ nombre });
+      if (tipoEquipoBD) {
+        return res.status(400).json({ msg: "Ya existe el tipo de equipo" });
+      }
+      const tipoEquipo = new TipoEquipo(datos);
+      console.log(tipoEquipo);
+      await tipoEquipo.save();
+      res.status(201).json(req.body);
+    } else {
+      return res.status(400).json({ msg: "Faltan parámetros" });
     }
-    const tipoEquipo = new TipoEquipo(datos);
-    console.log(tipoEquipo);
-    await tipoEquipo.save();
-    res.status(201).json(req.body);
   } catch (e) {
     res.status(500).json({ msg: e });
   }
@@ -37,7 +41,7 @@ const getEquipos = async (req = request, res = response) => {
     } else {
       tipoEquiposBD = await TipoEquipo.find();
     }
-    return res.json(tipoEquiposBD);
+    return res.status(200).json(tipoEquiposBD);
   } catch (e) {
     return res.status(500).json({ msj: e });
   }
@@ -51,7 +55,7 @@ const getEquipoById = async (req = request, res = response) => {
     const id = req.params.id;
     const filter = { _id: id };
     const tipoEquipoDB = await TipoEquipo.findOne(filter);
-    return res.json(tipoEquipoDB);
+    return res.status(200).json(tipoEquipoDB);
   } catch (e) {
     return res.status(500).json({ msj: e });
   }

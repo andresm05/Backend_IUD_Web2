@@ -10,7 +10,6 @@ const InventarioSchema= new Schema({
     modelo:{
         type:String,
         required: true,
-        unique: true
     },
     descripcion:{
         type: String

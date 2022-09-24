@@ -36,44 +36,59 @@ const getInventarios = async (req = request, res = response) => {
 const createInventario = async (req = request, res = response) => {
   try {
     data = req.body;
-    serial = req.body.serial;
-    const { usuario, marca, estado, tipoEquipo } = data;
-    //Validaciones
-    const usuarioBD = await Usuario.findOne({ _id: usuario._id, estado: true });
-    const marcaBD = await Marca.findOne({ _id: marca._id, estado: true });
-    const tipoEquipoBD = await TipoEquipo.findOne({
-      _id: tipoEquipo._id,
-      estado: true,
-    });
-    const estadoBD = await Estado.findOne({ _id: estado._id, estado: true });
+    if (
+      Object.keys(data).includes("serial") &&
+      Object.keys(data).includes("modelo") &&
+      Object.keys(data).includes("precio") &&
+      Object.keys(data).includes("usuario") &&
+      Object.keys(data).includes("marca") &&
+      Object.keys(data).includes("tipoEquipo") &&
+      Object.keys(data).includes("estado")
+    ) {
+      serial = req.body.serial;
+      const { usuario, marca, estado, tipoEquipo } = data;
+      //Validaciones
+      const usuarioBD = await Usuario.findOne({
+        _id: usuario._id,
+        estado: true,
+      });
+      const marcaBD = await Marca.findOne({ _id: marca._id, estado: true });
+      const tipoEquipoBD = await TipoEquipo.findOne({
+        _id: tipoEquipo._id,
+        estado: true,
+      });
+      const estadoBD = await Estado.findOne({ _id: estado._id, estado: true });
 
-    if (!tipoEquipoBD) {
-      return res
-        .status(400)
-        .json({ msj: "no existe el tipo de equipo o está inactivo" });
+      if (!tipoEquipoBD) {
+        return res
+          .status(400)
+          .json({ msj: "no existe el tipo de equipo o está inactivo" });
+      }
+      if (!estadoBD) {
+        return res
+          .status(400)
+          .json({ msj: "no existe el estado o está inactivo" });
+      }
+      if (!marcaBD) {
+        return res
+          .status(400)
+          .json({ msj: "no existe la marca o está inactiva" });
+      }
+      if (!usuarioBD) {
+        return res
+          .status(400)
+          .json({ msj: "no existe el usuario o está inactivo" });
+      }
+      const inventarioBD = await Inventario.findOne({ serial });
+      if (inventarioBD) {
+        return res.status(400).json({ msg: "Ya existe el inventario" });
+      }
+      const inventario = new Inventario(data);
+      await inventario.save();
+      res.status(201).json(inventario);
+    }else{
+      return res.status(500).json({ msg:'Faltan parámetros'})
     }
-    if (!estadoBD) {
-      return res
-        .status(400)
-        .json({ msj: "no existe el estado o está inactivo" });
-    }
-    if (!marcaBD) {
-      return res
-        .status(400)
-        .json({ msj: "no existe la marca o está inactiva" });
-    }
-    if (!usuarioBD) {
-      return res
-        .status(400)
-        .json({ msj: "no existe el usuario o está inactivo" });
-    }
-    const inventarioBD = await Inventario.findOne({ serial });
-    if (inventarioBD) {
-      return res.status(400).json({ msg: "Ya existe el inventario" });
-    }
-    const inventario = new Inventario(data);
-    await inventario.save();
-    res.status(201).json(inventario);
   } catch (e) {
     res.status(500).json({ msg: e });
   }

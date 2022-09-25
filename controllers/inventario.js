@@ -83,6 +83,7 @@ const createInventario = async (req = request, res = response) => {
           .json({ msj: "no existe el usuario o está inactivo" });
       }
       const inventario = new Inventario(data);
+      console.log(data)
       await inventario.save();
       res.status(201).json(inventario);
     } else {

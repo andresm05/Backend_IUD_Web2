@@ -5,29 +5,29 @@ const {body} = require('express-validator')
 const router = Router()
 
 /**
- * Crear un tipo de Equipo
+ * Crear un usuario
  */
 router.post('/',body('email').isEmail(), createUser)
 
 /**
- * Obtener todos los tipos de Equipo
+ * Obtener todos los usuarios
  */
 router.get('/',getUsers)
 
 /**
- * Obtener un equipo por Id
+ * Obtener un usuario por Id
  */
 
 router.get('/:id',getUserById)
 
 /**
- *  Editar un tipo de equipo
+ *  Editar un usuario
  */
 
 router.put('/:id',updateUserById)
 
 /**
- * Eliminar un tipo de Equipo
+ * Eliminar un usuario
  */
 
 router.delete('/:id',deleteUserById)

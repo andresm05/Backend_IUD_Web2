@@ -4,29 +4,29 @@ const { createEstado, getEstados, getEstadoById, updateEstadoById, deleteEstadoB
 const router = Router()
 
 /**
- * Crear un tipo de Equipo
+ * Crear un estado
  */
 router.post('/',createEstado)
 
 /**
- * Obtener todos los tipos de Equipo
+ * Obtener todos los estados
  */
 router.get('/',getEstados)
 
 /**
- * Obtener un equipo por Id
+ * Obtener un estado
  */
 
 router.get('/:id',getEstadoById)
 
 /**
- *  Editar un tipo de equipo
+ *  Editar un estado
  */
 
 router.put('/:id',updateEstadoById)
 
 /**
- * Eliminar un tipo de Equipo
+ * Eliminar un estado
  */
 
 router.delete('/:id',deleteEstadoById)

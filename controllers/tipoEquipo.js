@@ -6,7 +6,7 @@ const { request, response } = require("express");
  */
 const createEquipo = async (req = request, res = response) => {
   try {
-    if (Object.keys(req.data).includes("nombre")) {
+    if (Object.keys(req.body).includes("nombre")) {
       const nombre = req.body.nombre.toUpperCase();
       const datos = {
         nombre,

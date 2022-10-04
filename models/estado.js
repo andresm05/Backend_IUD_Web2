@@ -7,7 +7,7 @@ const EstadoSchema = Schema({
     },
     estado:{
         type: Boolean,
-        required: true,
+        default: true,
     },
     fechaCreacion:{
         type: Date,

@@ -7,14 +7,11 @@ const { request, response } = require("express");
 const createEstado = async (req = request, res = response) => {
   try {
     if (
-      Object.keys(req.body).includes("nombre") &&
-      Object.keys(req.body).includes("estado")
+      Object.keys(req.body).includes("nombre")
     ) {
       const nombre = req.body.nombre.toUpperCase();
-      const estadoRes = req.body.estado;
       const datos = {
         nombre,
-        estado: estadoRes,
       };
       const estadoBd = await Estado.findOne({ nombre });
       if (estadoBd) {

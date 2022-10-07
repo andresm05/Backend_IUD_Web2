@@ -24,7 +24,7 @@ router.get('/:id',getUserById)
  *  Editar un usuario
  */
 
-router.put('/:id',updateUserById)
+router.put('/:id',body('email').isEmail(),updateUserById)
 
 /**
  * Eliminar un usuario

@@ -78,6 +78,10 @@ const getUserById = async (req = request, res = response) => {
 
 const updateUserById = async (req = request, res = response) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ err: errors.array() });
+    }
     const id = req.params.id;
     const buscarUser = await Usuario.findById(id);
     if (!buscarUser) {
@@ -86,6 +90,8 @@ const updateUserById = async (req = request, res = response) => {
     const data = req.body;
     console.log(data);
     console.log(id);
+    data.nombre = data.nombre.toLowerCase();
+    data.email = data.email.toLowerCase();
     data.fechaActualizacion = new Date();
     console.log(data);
 

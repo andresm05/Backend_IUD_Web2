@@ -76,6 +76,7 @@ const updateEquipoById = async (req = request, res = response) => {
     console.log(data);
     console.log(id);
     data.fechaActualizacion = new Date();
+    data.nombre = data.nombre.toUpperCase();
     console.log(data);
     const tipoEquipoDB = await TipoEquipo.findByIdAndUpdate(id, data, {
       new: true,

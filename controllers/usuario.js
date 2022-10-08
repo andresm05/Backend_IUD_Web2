@@ -17,7 +17,7 @@ const createUser = async (req = request, res = response) => {
         return res.status(400).json({ err: errors.array() });
       }
       const nombre = req.body.nombre.toLowerCase();
-      const email = req.body.email;
+      const email = req.body.email.toLowerCase();
       const datos = {
         nombre,
         email,

@@ -5,7 +5,6 @@
   "repository": "https://github.com/andresm05/Backend_IUD_Web2.git",
   "author": "jaime <jaime.munoz@est.iudigital.edu.co>",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "start": "node server.js"
   },

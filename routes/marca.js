@@ -8,7 +8,7 @@ const router = Router()
 /**
  * Crear una marca
  */
-router.post('/',createMarca)
+router.post('/',validarJwt,esAdmin,createMarca)
 
 /**
  * Obtener todas las marcas

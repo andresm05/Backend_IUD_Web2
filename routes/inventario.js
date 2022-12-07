@@ -1,16 +1,18 @@
 const {Router} = require('express')
 const {getInventarios, createInventario, updateInventarioById, deleteInventarioById, getInventarioById} = require('../controllers/inventario')
+const {validarJwt} = require('../middlewares/validarJwt')
+const {esAdmin} = require('../middlewares/validarRol')
 
 const router = Router()
 
-router.get('/', getInventarios)
+router.get('/',validarJwt,getInventarios)
 
-router.get('/:id', getInventarioById)
+router.get('/:id',validarJwt,getInventarioById)
 
-router.post('/', createInventario)
+router.post('/',validarJwt,esAdmin,createInventario)
 
-router.put('/:id',  updateInventarioById)
+router.put('/:id',validarJwt,esAdmin,updateInventarioById)
 
-router.delete('/:id', deleteInventarioById)
+router.delete('/:id',validarJwt,esAdmin,deleteInventarioById)
 
 module.exports = router
